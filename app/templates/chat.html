@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<div class="" id="message"></div>
+<h1>User Name : {{current_user.username}}</h1>    
+<br>
+<h1>Room : </h1>
+ <div class="" id="allmessage">
+    <h1 id="username"></h1>
+
+ </div>
+<form id="form">
+    <label for="form">Enter Message</label>
+    <input type="text" name="" id="input_for_message">
+    <button type="submit">Send</button>
+</form>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('join_room', { user: "{{ current_user.username }}", roomid: 1 });
+
+        let input_message = document.getElementById('input_for_message');
+        let form = document.getElementById('form');
+
+        form.onsubmit = function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            let message = input_message.value.trim();
+            if (message.length) {
+                socket.emit('send_message', {
+                    username: "{{ current_user.username }}",
+                    room: "1",
+                    message: message
+                });
+            }
+
+            input_message.value = '';
+            input_message.focus();
+        };
+    });
+
+    socket.on('room_joined', function(data) {
+        console.log(data.roomid);
+        console.log(data.user);
+        const info = document.createElement('div');
+        info.innerHTML = `${data.user} has joined the room`;
+        document.getElementById('message').appendChild(info);
+    });
+</script>
+{% endblock %}
