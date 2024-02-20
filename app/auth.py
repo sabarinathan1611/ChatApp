@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for,jsonify
 from flask_login import login_required, login_user, logout_user, current_user
-
+from .models import User
 from .functions import send_verification_email
 from .config import Config 
 from flask_cors import cross_origin
@@ -64,7 +64,7 @@ def verify_email(verification_token):
         
         # Create a User object from the retrieved data
         user = User(
-            username=user_data['username'],
+            username=user_data['_id'],
             email=user_data['email'],
             password=user_data['password'],
             is_verified=True  
@@ -74,7 +74,7 @@ def verify_email(verification_token):
         login_user(user)
 
         flash('Email verification successful! You can now access your account.')
-        return redirect(url_for('view.home'))
+        return redirect(url_for('views.home'))
     else:
         flash('Invalid verification token. Please try again.')
         return redirect(url_for('signup'))
