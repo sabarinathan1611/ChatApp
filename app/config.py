@@ -17,7 +17,7 @@ class Config:
     WTF_CSRF_SECRET_KEY = os.environ.get('CSRF_SECRET_KEY', os.urandom(16))
 
     # MongoDB connection setup
-    MONGO_URI = os.environ.get('MONGO_URI', 'mongodb+srv://sabari:2WRQ2ruJ2MCrGsVR@atlascluster.cmkbnpp.mongodb.net/?retryWrites=true&w=majority')
+    MONGO_URI = os.environ.get('MONGO_URI')
     print(MONGO_URI)
     client = MongoClient(MONGO_URI)
     DB_NAME = os.environ.get('DB_NAME', 'ChatApp')
