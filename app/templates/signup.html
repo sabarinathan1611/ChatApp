@@ -1,0 +1,71 @@
+<!-- Signup.html -->
+{% extends "base.html" %}
+{% block title %} Signup {% endblock %}
+
+{% block content %}
+   <form id="signupForm">
+    <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username:</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password:</label>
+        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Signup</button>
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#signupForm').submit(function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Form validation
+            var password = $('#password').val();
+            var confirmPassword = $('#confirmPassword').val();
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            // Serialize form data to JSON
+            var formData = {
+                'email': $('#email').val(),
+                'username': $('#username').val(),
+                'password': password
+            };
+
+            // Send AJAX POST request with JSON data
+            $.ajax({
+                type: 'POST',
+                url: '/signup', // Change the URL to your signup endpoint
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    // Handle success response
+                    if (response.success) {
+                        // Redirect to home page or perform any other action
+                        window.location.href = '/';
+                    } else {
+                        // Display error message
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

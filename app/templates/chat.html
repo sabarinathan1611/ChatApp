@@ -3,13 +3,10 @@
 
 {% block content %}
 <div class="" id="message"></div>
-<h1>User Name : {{current_user.username}}</h1>    
+<h1>User Name : </h1>    
 <br>
 <h1>Room : </h1>
- <div class="" id="allmessage">
-    <h1 id="username"></h1>
-
- </div>
+ 
 <form id="form">
     <label for="form">Enter Message</label>
     <input type="text" name="" id="input_for_message">
@@ -18,7 +15,7 @@
 <script>
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
-        socket.emit('join_room', { user: "{{ current_user.username }}", roomid: 1 });
+        socket.emit('join_room', { user: "", roomid: 1 });
 
         let input_message = document.getElementById('input_for_message');
         let form = document.getElementById('form');
@@ -29,7 +26,7 @@
             let message = input_message.value.trim();
             if (message.length) {
                 socket.emit('send_message', {
-                    username: "{{ current_user.username }}",
+                    username: "sabari",
                     room: "1",
                     message: message
                 });
@@ -39,7 +36,21 @@
             input_message.focus();
         };
     });
+    socket.on('send_message',function(data){
+        username=document.getElementById('username');
+        message = document.getElementById('message');
+        username.innerHTML=`${data.username}`;
+        message.innerHTML=`${data.message}`;
+        console.log("username",data.username);
 
+    });
+    socket.on('recived_message', function(data) {
+        console.log("Work",data.roomid);
+        console.log(data.user);
+        const info = document.createElement('div');
+        info.innerHTML = `User ${data.username}: ${data.message}`;
+        document.getElementById('message').appendChild(info);
+    });
     socket.on('room_joined', function(data) {
         console.log(data.roomid);
         console.log(data.user);

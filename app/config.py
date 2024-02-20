@@ -1,26 +1,28 @@
+#config.py
 import os
-import secrets
+from pymongo import MongoClient
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_hex(16))
-    print("SECRET_KEY :",SECRET_KEY)
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite:///database.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(16))
     DEBUG = False
-    SESSION_COOKIE_HTTPOLY=True
+    SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = True
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = os.environ.get('GMAIL_USERNAME')  # Use a custom environment variable for Gmail username
-    print("MAIL_USERNAME :",MAIL_USERNAME)
-    MAIL_PASSWORD = os.environ.get('GMAIL_PASSWORD')  # Use a custom environment variable for Gmail app-specific password
-    print("MAIL_PASSWORD:",MAIL_PASSWORD)
-    AdminMail=os.environ.get('ADMINMAIL')
-    WTF_CSRF_SECRET_KEY = os.environ.get('CSRF_SECRET_KEY', secrets.token_hex(16))
-    
+    MAIL_USERNAME = os.environ.get('GMAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('GMAIL_PASSWORD')
+    ADMIN_MAIL = os.environ.get('ADMINMAIL')
+    WTF_CSRF_SECRET_KEY = os.environ.get('CSRF_SECRET_KEY', os.urandom(16))
 
+    # MongoDB connection setup
+    MONGO_URI = os.environ.get('MONGO_URI', 'mongodb+srv://sabari:2WRQ2ruJ2MCrGsVR@atlascluster.cmkbnpp.mongodb.net/?retryWrites=true&w=majority')
+    print(MONGO_URI)
+    client = MongoClient(MONGO_URI)
+    DB_NAME = os.environ.get('DB_NAME', 'ChatApp')
+    db = client[DB_NAME]
+    users_db=db.get_collection("users")
 
 class DevelopmentConfig(Config):
     DEBUG = True

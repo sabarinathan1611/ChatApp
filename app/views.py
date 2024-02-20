@@ -1,6 +1,5 @@
+# views.py
 from flask import Blueprint, render_template, request, flash, redirect, url_for,jsonify
-from . import db
-from .models import User
 from flask_login import login_required,current_user
 from . import socketio
 from flask_socketio import join_room
@@ -24,10 +23,11 @@ def handle_joinroom(data):
     socketio.emit('room_joined', data)
 
 @socketio.on('send_message')
-def send_message(data):
+def send__message(data):
     print("User :",data['username'])
     print("room:",data['room']),
     print("Message :",data['message'])
-    return socketio.emit('recived_message',data)
+    join_room(data['room'])
+    socketio.emit('recived_message',data,room=data['room'])
     
 
